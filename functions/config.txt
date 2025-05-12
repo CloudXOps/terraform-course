@@ -1,0 +1,4 @@
+# Configuration data for Terraform functions
+app_name=myapp
+environment=production
+port=8080
