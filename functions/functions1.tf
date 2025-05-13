@@ -32,8 +32,9 @@ locals {
   user_keys   = keys(var.user_roles)
   user_values = values(var.user_roles)
 
-  # 3. jsonencode / jsondecode
+  # 3. jsonencode 
   encoded_json = jsonencode(var.user_roles)
+  //jsondecode
   decoded_json = jsondecode(var.json_input)
 
   # 4. file / templatefile (assume file path exists)
@@ -55,7 +56,11 @@ locals {
 
   # 9. regex, regexreplace
   email_match   = regex("^[a-z]+@[a-z]+\\.[a-z]{2,3}$", "user@example.com")
-  sanitized_str = regexreplace("file: config.yaml", "file: (.*)", "$1")
+  # sanitized_str = regexreplace("file: config.yaml", "file: (.*)", "$1")
+
+
+  hcl_values = jsondecode(file("${path.module}/values.json"))
+
 }
 
 
@@ -75,6 +80,7 @@ output "function_examples" {
     joined_users     = local.joined_users
     split_users      = local.split_users
     email_match      = local.email_match
-    sanitized_str    = local.sanitized_str
+    # sanitized_str    = local.sanitized_str
+    hcl_values       = local.hcl_values
   }
 }

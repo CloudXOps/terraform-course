@@ -1,0 +1,13 @@
+{
+    "users": [ "alice", "bob", "alice", "dave" ],
+    "user_roles": {
+        "alice": "admin",
+        "bob": "dev",
+        "dave": "qa"
+    },
+    "json_string": "{\"name\":\"test\",\"env\":\"prod\"}",
+    "template_vars": {
+            "app": "app1",
+            "port": 8080
+    }
+}
