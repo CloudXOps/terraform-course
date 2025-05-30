@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "project_name" {
   description = "Project name"
   type        = string
-  default     = "tf-demo"
+  default     = "terraform-learning"
 }
 
 variable "environment" {
