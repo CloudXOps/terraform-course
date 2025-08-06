@@ -42,7 +42,7 @@ locals {
   not_private          = !(aws_s3_bucket.example.acl == "private")
 
   // Conditional (Ternary) Operator
-  longer_bucket = local.name1_length > local.name2_length ? aws_s3_bucket.example.bucket : ( 5>2 ? "apple": "banana")  // ? :
+  longer_bucket = (local.name1_length > local.name2_length) ? aws_s3_bucket.example.bucket : ( 5>2 ? "apple": "banana")  // ? :
 
   // Indexing
   bucket_names = [aws_s3_bucket.example.bucket, aws_s3_bucket.example2.bucket]
@@ -55,7 +55,7 @@ locals {
   // Splat Operator
   all_buckets      = [aws_s3_bucket.example, aws_s3_bucket.example2]
 
-  all_bucket_names = [for b in local.all_buckets : b.bucket]  // list of bucket names
+  all_bucket_names = [for b in local.all_buckets : b.bucket]  // using list comprehension
   all_bucket_names_1 = local.all_buckets.*.id
 
   all_tags         = local.all_buckets.*.tags // list of all tags
