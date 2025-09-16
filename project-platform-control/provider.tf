@@ -23,4 +23,5 @@ terraform {
     encrypt = true
     dynamodb_table = "terraform-learning-state-lock"
   }
+
 }
