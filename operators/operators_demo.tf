@@ -2,7 +2,7 @@ provider "aws" {
     region = "us-east-1"
 }
 
-resource "aws_s3_bucket" "example" {
+resource "aws_s3_bucket" "bucket1" {
   bucket = "tf-operators-demo-bucket"
   tags = {
     Purpose = "OperatorsDemo"
@@ -11,7 +11,7 @@ resource "aws_s3_bucket" "example" {
   }
 }
 
-resource "aws_s3_bucket" "example2" {
+resource "aws_s3_bucket" "bucket2" {
   bucket = "tf-operators-demo-bucket-2"
   tags = {
     Purpose = "OperatorsDemo"
@@ -20,57 +20,60 @@ resource "aws_s3_bucket" "example2" {
 
 locals {
   // Arithmetic Operators: Use bucket name lengths
-  name1_length = length(aws_s3_bucket.example.bucket)
-  name2_length = length(aws_s3_bucket.example2.bucket)
-  sum          = local.name1_length + local.name2_length
-  difference   = local.name1_length - local.name2_length
-  product      = local.name1_length * 2
-  quotient     = local.name1_length / 2
-  modulus      = local.name1_length % 5
+  bucket1_length = length(aws_s3_bucket.bucket1.bucket)
+  bucket2_length = length(aws_s3_bucket.bucket2.bucket)
+  sum          = local.bucket1_length + local.bucket2_length
+  difference   = local.bucket1_length - local.bucket2_length
+  product      = local.bucket1_length * 2
+  quotient     = local.bucket1_length / 2
+  modulus      = local.bucket1_length % 5
 
   // Comparison Operators
-  is_equal      = aws_s3_bucket.example.bucket == aws_s3_bucket.example2.bucket
-  is_not_equal  = aws_s3_bucket.example.bucket != aws_s3_bucket.example2.bucket
-  is_greater    = local.name1_length > local.name2_length
-  is_greater_eq = local.name1_length >= local.name2_length
-  is_less       = local.name1_length < local.name2_length
-  is_less_eq    = local.name1_length <= local.name2_length
+  is_equal      = aws_s3_bucket.bucket1.bucket == aws_s3_bucket.bucket2.bucket
+  is_not_equal  = aws_s3_bucket.bucket1.bucket != aws_s3_bucket.bucket2.bucket
+  is_greater    = local.bucket1_length > local.bucket2_length
+  is_greater_eq = local.bucket1_length >= local.bucket2_length
+  is_less       = local.bucket1_length < local.bucket2_length
+  is_less_eq    = local.bucket1_length <= local.bucket2_length
 
   // Logical Operators
-  both_buckets_private = (aws_s3_bucket.example.acl == "private") && (aws_s3_bucket.example2.acl == "private")
-  any_bucket_private   = (aws_s3_bucket.example.acl == "private") || (aws_s3_bucket.example2.acl == "private")
-  not_private          = !(aws_s3_bucket.example.acl == "private")
+  both_buckets_private = ( (aws_s3_bucket.bucket1.acl == "private") && (aws_s3_bucket.bucket2.acl == "private") )
+  any_bucket_private   = ( (aws_s3_bucket.bucket1.acl == "private") || (aws_s3_bucket.bucket2.acl == "private") )
+  not_private          = ! (aws_s3_bucket.bucket1.acl == "private")
 
   // Conditional (Ternary) Operator
-  longer_bucket = (local.name1_length > local.name2_length) ? aws_s3_bucket.example.bucket : ( 5>2 ? "apple": "banana")  // ? :
+  // main_expression ? ( exp1 : exp 2)
+
+  longer_bucket = (local.bucket1_length > local.bucket2_length) ? (aws_s3_bucket.bucket1.bucket) : ( 5>2 ? "apple": "banana")
+
 
   // Indexing
-  bucket_names = [aws_s3_bucket.example.bucket, aws_s3_bucket.example2.bucket]
+  bucket_names = [aws_s3_bucket.bucket1.bucket, aws_s3_bucket.bucket2.bucket]
   first_bucket = local.bucket_names[0]
 
-  tags_map     = aws_s3_bucket.example.tags
+  tags_map     = aws_s3_bucket.bucket1.tags
   purpose_tag  = local.tags_map["Purpose"]
   owner_tag = local.tags_map["Owner"]
 
   // Splat Operator
-  all_buckets      = [aws_s3_bucket.example, aws_s3_bucket.example2]
+  all_buckets      = [aws_s3_bucket.bucket1, aws_s3_bucket.bucket2]
 
   all_bucket_names = [for b in local.all_buckets : b.bucket]  // using list comprehension
   all_bucket_names_1 = local.all_buckets.*.id
 
   all_tags         = local.all_buckets.*.tags // list of all tags
 
-  // Additional Splat Operator Examples
+  // Additional Splat Operator bucket1s
   all_bucket_arns  = local.all_buckets[*].arn
   all_bucket_ids   = local.all_buckets[*].id
 
   all_purpose_tags = [for t in local.all_buckets[*].tags : t["Purpose"]]
 }
 
-output "arithmetic_examples" {
+output "arithmetic_bucket1s" {
   value = {
-    name1_length = local.name1_length
-    name2_length = local.name2_length
+    bucket1_length = local.bucket1_length
+    bucket2_length = local.bucket2_length
     sum          = local.sum
     difference   = local.difference
     product      = local.product
@@ -79,7 +82,7 @@ output "arithmetic_examples" {
   }
 }
 
-output "comparison_examples" {
+output "comparison_bucket1s" {
   value = {
     is_equal      = local.is_equal
     is_not_equal  = local.is_not_equal
@@ -90,7 +93,7 @@ output "comparison_examples" {
   }
 }
 
-output "logical_examples" {
+output "logical_bucket1s" {
   value = {
     both_buckets_private = local.both_buckets_private
     any_bucket_private   = local.any_bucket_private
@@ -98,18 +101,18 @@ output "logical_examples" {
   }
 }
 
-output "ternary_example" {
+output "ternary_bucket1" {
   value = local.longer_bucket
 }
 
-output "indexing_examples" {
+output "indexing_bucket1s" {
   value = {
     first_bucket = local.first_bucket
     purpose_tag  = local.purpose_tag
   }
 }
 
-output "splat_operator_example" {
+output "splat_operator_bucket1" {
   value = {
     all_bucket_names = local.all_bucket_names
     all_tags         = local.all_tags
