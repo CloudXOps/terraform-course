@@ -116,6 +116,7 @@ variable "gha_iam_roles" {
     "oidc_gha_read_platform-control-aws" = {
       assume_role_policy  = "read_assume_role.json"
       managed_policy_arns = ["arn:aws:iam::aws:policy/ReadOnlyAccess"]
+      max_session_duration = 7200
     }
     "oidc_gha_prod_platform-control-aws" = {
       assume_role_policy  = "prod_assume_role.json"

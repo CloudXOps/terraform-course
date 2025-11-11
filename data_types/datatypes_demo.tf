@@ -7,9 +7,12 @@ locals {
   ])
 
   bucket_region_names = {
-    "us-east-1" : {"bucket_name": "my-first-bucket-123", "acl": "private"}
-    "us-west-2" : {"bucket_name": "mmy-second-bucket-456", "acl": "public"}
-    "eu-central-1" : {"bucket_name": "my-third-bucket-789", "acl": "private"}
+    "us-east-1" = { "bucket_name" = "my-first-bucket-123"
+    "acl" = "private" }
+    "us-west-2" = { "bucket_name" = "mmy-second-bucket-456"
+    "acl" = "public" }
+    "eu-central-1" = { "bucket_name" = "my-third-bucket-789"
+    "acl" = "private" }
   }
 }
 
@@ -25,11 +28,13 @@ resource "aws_s3_bucket" "buckets" {
     Created     = "terraform"
   }
 }
+
+
 # Create multiple S3 buckets using for_each
 resource "aws_s3_bucket" "buckets1" {
   for_each = local.bucket_region_names
 
-  bucket = each.key
+  bucket = each.value.bucket_name
 
   tags = {
     Name        = each.key
@@ -40,7 +45,7 @@ resource "aws_s3_bucket" "buckets1" {
 
 resource "aws_s3_bucket_region" "bucket_regions" {
   for_each = local.bucket_region_names
-  
+
   bucket = aws_s3_bucket.buckets1[each.key].id
   region = each.value
 }
